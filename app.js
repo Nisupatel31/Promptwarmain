@@ -5,12 +5,15 @@ import {
   sanitizeEntry
 } from "./wellness.js";
 
+const PROFILE_KEY = "steadymind.profile.v1";
 const STORAGE_KEY = "steadymind.entries.v1";
 const $ = (selector, parent = document) => parent.querySelector(selector);
 const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
 
 const state = {
-  entries: loadEntries(),
+  profile: loadProfile(),
+  authenticated: false,
+  entries: [],
   selectedTags: new Set(),
   conversation: []
 };
@@ -26,6 +29,49 @@ const elements = {
   exerciseContent: $("#exercise-content"),
   settingsDialog: $("#settings-dialog")
 };
+
+function loadProfile() {
+  try {
+    return JSON.parse(localStorage.getItem(PROFILE_KEY));
+  } catch {
+    return null;
+  }
+}
+
+function saveProfile(profile) {
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  state.profile = profile;
+}
+
+function checkAuth() {
+  const overlay = $("#auth-overlay");
+  const createScreen = $("#create-profile-screen");
+  const enterScreen = $("#enter-passcode-screen");
+
+  if (!state.profile) {
+    $(".app-shell").style.opacity = "0.02";
+    $(".app-shell").style.pointerEvents = "none";
+    overlay.style.display = "grid";
+    createScreen.hidden = false;
+    enterScreen.hidden = true;
+  } else if (!state.authenticated) {
+    $(".app-shell").style.opacity = "0.02";
+    $(".app-shell").style.pointerEvents = "none";
+    $("#welcome-avatar").textContent = state.profile.avatar;
+    $("#welcome-back-title").textContent = `Welcome back, ${state.profile.name}`;
+    overlay.style.display = "grid";
+    createScreen.hidden = true;
+    enterScreen.hidden = false;
+    $("#login-passcode").focus();
+  } else {
+    $(".app-shell").style.opacity = "1";
+    $(".app-shell").style.pointerEvents = "auto";
+    overlay.style.display = "none";
+    state.entries = loadEntries();
+    renderDashboard();
+    setDateAndGreeting();
+  }
+}
 
 function loadEntries() {
   try {
@@ -80,7 +126,17 @@ function setDateAndGreeting() {
   }).format(now);
   const hour = now.getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-  $("#today-title").firstChild.textContent = `${greeting}, `;
+  const name = state.profile ? state.profile.name : "Student";
+  $("#today-title").innerHTML = `${greeting}, <span id="student-name">${escapeHtml(name)}</span>.`;
+
+  if (state.profile?.exam) {
+    $("#student-exam").textContent = state.profile.exam;
+  }
+
+  if (state.profile?.avatar) {
+    $(".brand-mark").textContent = state.profile.avatar;
+    $(".companion-avatar").textContent = state.profile.avatar;
+  }
 }
 
 function navigate(viewId) {
@@ -372,10 +428,50 @@ function bindEvents() {
   $("#delete-data").addEventListener("click", () => {
     if (!confirm("Delete every journal entry and mood check-in from this browser? This cannot be undone.")) return;
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(PROFILE_KEY);
+    location.reload();
+  });
+
+  $("#create-profile-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = $("#profile-name").value.trim();
+    const avatar = $('input[name="avatar"]:checked').value;
+    const exam = $("#profile-exam").value.trim();
+    const passcode = $("#profile-passcode").value;
+
+    saveProfile({ name, avatar, exam, passcode });
+    state.authenticated = true;
+    checkAuth();
+  });
+
+  $("#login-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const entered = $("#login-passcode").value;
+    if (entered === state.profile.passcode) {
+      state.authenticated = true;
+      $("#login-passcode").value = "";
+      $("#login-error").hidden = true;
+      checkAuth();
+    } else {
+      $("#login-error").hidden = false;
+      $("#login-passcode").value = "";
+      $("#login-passcode").focus();
+    }
+  });
+
+  $("#reset-profile-btn").addEventListener("click", () => {
+    if (confirm("Resetting profile will delete your local profile and all journal entries. This action cannot be undone. Proceed?")) {
+      localStorage.removeItem(PROFILE_KEY);
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+  });
+
+  $("#lock-profile").addEventListener("click", () => {
+    state.authenticated = false;
     state.entries = [];
-    renderDashboard();
     elements.settingsDialog.close();
-    elements.status.textContent = "All local wellness data has been deleted.";
+    checkAuth();
   });
 }
 
@@ -391,8 +487,7 @@ async function showAIStatus() {
   }
 }
 
-setDateAndGreeting();
 bindEvents();
-renderDashboard();
+checkAuth();
 navigate(location.hash.slice(1) || "today");
 showAIStatus();

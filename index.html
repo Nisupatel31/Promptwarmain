@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="A private mental wellness companion for students preparing for high-stakes exams.">
     <title>SteadyMind | Exam wellness companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -45,7 +48,7 @@
             <div>
               <p class="eyebrow" id="today-date"></p>
               <h1 id="today-title">Good evening, <span id="student-name">Aarav</span>.</h1>
-              <p>Take a breath. You do not have to carry the whole syllabus at once.</p>
+              <p>Take a breath. You do not have to carry the whole syllabus for <strong id="student-exam">your exam</strong> at once.</p>
             </div>
             <div class="streak-pill" aria-label="Check-in streak">
               <span aria-hidden="true">✦</span>
@@ -242,11 +245,68 @@
       <h2 id="settings-title">Privacy &amp; data</h2>
       <p>Entries are stored only in this browser. When Generative AI is enabled, the current message and minimized recent context are sent securely to the model provider and are not stored by this server.</p>
       <div class="settings-actions">
+        <button class="secondary-button" id="lock-profile" type="button">Lock journal</button>
         <button class="secondary-button" id="export-data" type="button">Export my data</button>
         <button class="danger-button" id="delete-data" type="button">Delete all data</button>
       </div>
       <p class="fine-print">This tool supports reflection and is not medical care or a substitute for a qualified professional.</p>
     </dialog>
+
+    <!-- Auth Lock Screen Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+      <!-- Create Profile Screen -->
+      <div id="create-profile-screen" class="auth-card" hidden>
+        <div class="auth-header">
+          <span class="auth-logo">S</span>
+          <h2>Welcome to SteadyMind</h2>
+          <p>Create your private local profile. Your passcode and journal never leave this device.</p>
+        </div>
+        <form id="create-profile-form">
+          <div class="form-group">
+            <label for="profile-name">What should we call you?</label>
+            <input type="text" id="profile-name" placeholder="E.g., Aarav" required maxlength="15">
+          </div>
+          <div class="form-group">
+            <label>Choose your avatar emoji</label>
+            <div class="avatar-options">
+              <label><input type="radio" name="avatar" value="🧘" checked><span>🧘</span></label>
+              <label><input type="radio" name="avatar" value="📚"><span>📚</span></label>
+              <label><input type="radio" name="avatar" value="⚡"><span>⚡</span></label>
+              <label><input type="radio" name="avatar" value="🍀"><span>🍀</span></label>
+              <label><input type="radio" name="avatar" value="🌟"><span>🌟</span></label>
+              <label><input type="radio" name="avatar" value="🎓"><span>🎓</span></label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="profile-exam">Target Exam</label>
+            <input type="text" id="profile-exam" placeholder="E.g., JEE, NEET, Board Exams" required maxlength="25">
+          </div>
+          <div class="form-group">
+            <label for="profile-passcode">Set a 4-Digit Passcode</label>
+            <input type="password" id="profile-passcode" pattern="[0-9]{4}" placeholder="••••" required maxlength="4" inputmode="numeric">
+            <span class="field-hint">Used to unlock your journal on this device</span>
+          </div>
+          <button class="primary-button" type="submit">Create Private Profile</button>
+        </form>
+      </div>
+
+      <!-- Enter Passcode Screen -->
+      <div id="enter-passcode-screen" class="auth-card" hidden>
+        <div class="auth-header">
+          <span id="welcome-avatar" class="auth-logo">🧘</span>
+          <h2 id="welcome-back-title">Welcome back</h2>
+          <p>Please enter your 4-digit passcode to unlock your journal.</p>
+        </div>
+        <form id="login-form">
+          <div class="form-group">
+            <input type="password" id="login-passcode" pattern="[0-9]{4}" placeholder="••••" required maxlength="4" inputmode="numeric" autofocus>
+            <p id="login-error" class="error-message" hidden>Incorrect passcode. Please try again.</p>
+          </div>
+          <button class="primary-button" type="submit">Unlock Journal</button>
+          <button type="button" class="text-button" id="reset-profile-btn" style="margin-top: 15px; color: var(--rose);">Reset profile &amp; delete data</button>
+        </form>
+      </div>
+    </div>
 
     <template id="crisis-template">
       <div class="crisis-panel" role="alert">
