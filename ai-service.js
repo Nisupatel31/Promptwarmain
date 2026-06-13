@@ -138,6 +138,17 @@ export async function generateWellnessResponse(payload, options = {}) {
   if (!apiKey) return { ...createFallback(input), crisis: false };
 
   const model = options.model ?? process.env.GEMINI_MODEL ?? DEFAULT_MODEL;
+  
+  let signal;
+  let timeoutId;
+  if (typeof AbortSignal.timeout === "function") {
+    signal = AbortSignal.timeout(20000);
+  } else {
+    const controller = new AbortController();
+    timeoutId = setTimeout(() => controller.abort(), 20000);
+    signal = controller.signal;
+  }
+
   const response = await fetchImpl(`${GEMINI_BASE_URL}/${encodeURIComponent(model)}:generateContent`, {
     method: "POST",
     headers: {
@@ -166,8 +177,12 @@ export async function generateWellnessResponse(payload, options = {}) {
         responseJsonSchema: WELLNESS_SCHEMA
       }
     }),
-    signal: AbortSignal.timeout(20000)
+    signal
   });
+
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     const detail = await response.text();
