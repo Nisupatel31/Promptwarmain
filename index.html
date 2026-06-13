@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A private mental wellness companion for students preparing for high-stakes exams.">
+    <title>SteadyMind | Exam wellness companion</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <a class="brand" href="#today" aria-label="SteadyMind home">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span>SteadyMind</span>
+        </a>
+        <p class="brand-caption">Your exam-season companion</p>
+
+        <nav>
+          <a class="nav-link active" href="#today" data-view="today">
+            <span aria-hidden="true">⌂</span> Today
+          </a>
+          <a class="nav-link" href="#patterns" data-view="patterns">
+            <span aria-hidden="true">◫</span> My patterns
+          </a>
+          <a class="nav-link" href="#toolkit" data-view="toolkit">
+            <span aria-hidden="true">◇</span> Calm toolkit
+          </a>
+        </nav>
+
+        <div class="privacy-note">
+          <span class="privacy-icon" aria-hidden="true">✓</span>
+          <div>
+            <strong>Private by design</strong>
+            <p>Your entries stay in this browser.</p>
+          </div>
+        </div>
+        <button class="text-button" id="open-settings" type="button">Privacy &amp; data</button>
+      </aside>
+
+      <main id="main-content">
+        <section class="view active" id="today" aria-labelledby="today-title">
+          <header class="topbar">
+            <div>
+              <p class="eyebrow" id="today-date"></p>
+              <h1 id="today-title">Good evening, <span id="student-name">Aarav</span>.</h1>
+              <p>Take a breath. You do not have to carry the whole syllabus at once.</p>
+            </div>
+            <div class="streak-pill" aria-label="Check-in streak">
+              <span aria-hidden="true">✦</span>
+              <strong id="streak-count">0</strong> day streak
+            </div>
+          </header>
+
+          <div class="dashboard-grid">
+            <section class="card checkin-card" aria-labelledby="checkin-title">
+              <div class="card-heading">
+                <div>
+                  <p class="eyebrow">Daily check-in</p>
+                  <h2 id="checkin-title">How are you, really?</h2>
+                </div>
+                <span class="duration">2 min</span>
+              </div>
+
+              <form id="checkin-form">
+                <fieldset class="mood-fieldset">
+                  <legend>Pick the feeling closest to right now</legend>
+                  <div class="mood-options">
+                    <label>
+                      <input type="radio" name="mood" value="1">
+                      <span class="mood-face" aria-hidden="true">◡</span>
+                      <span>Drained</span>
+                    </label>
+                    <label>
+                      <input type="radio" name="mood" value="2">
+                      <span class="mood-face" aria-hidden="true">⌒</span>
+                      <span>Low</span>
+                    </label>
+                    <label>
+                      <input type="radio" name="mood" value="3" checked>
+                      <span class="mood-face" aria-hidden="true">—</span>
+                      <span>Okay</span>
+                    </label>
+                    <label>
+                      <input type="radio" name="mood" value="4">
+                      <span class="mood-face" aria-hidden="true">⌣</span>
+                      <span>Good</span>
+                    </label>
+                    <label>
+                      <input type="radio" name="mood" value="5">
+                      <span class="mood-face" aria-hidden="true">◠</span>
+                      <span>Strong</span>
+                    </label>
+                  </div>
+                </fieldset>
+
+                <label class="field-label" for="journal">What is taking up space in your mind?</label>
+                <div class="journal-wrap">
+                  <textarea id="journal" maxlength="1200" rows="6" placeholder="No need to make it sound perfect. Write about studies, sleep, family, expectations, or anything else..." required></textarea>
+                  <span class="character-count" id="character-count">0 / 1200</span>
+                </div>
+
+                <div class="quick-tags" aria-label="Optional context tags">
+                  <button type="button" data-tag="Mock test">+ Mock test</button>
+                  <button type="button" data-tag="Sleep">+ Sleep</button>
+                  <button type="button" data-tag="Family">+ Family</button>
+                  <button type="button" data-tag="Focus">+ Focus</button>
+                </div>
+
+                <button class="primary-button" type="submit">
+                  Reflect with me <span aria-hidden="true">→</span>
+                </button>
+              </form>
+              <div id="form-status" class="sr-only" role="status" aria-live="polite"></div>
+            </section>
+
+            <div class="right-column">
+              <section class="card companion-card" aria-labelledby="companion-title">
+                <div class="companion-header">
+                  <div class="companion-avatar" aria-hidden="true">S</div>
+                  <div>
+                    <p class="eyebrow">Your companion</p>
+                    <h2 id="companion-title">A small step for now</h2>
+                  </div>
+                </div>
+                <div class="companion-message" id="companion-message">
+                  <div id="chat-log" class="chat-log" aria-live="polite">
+                    <p class="chat-bubble assistant">You can begin with one honest sentence. I’ll help you make sense of it without judgment.</p>
+                  </div>
+                </div>
+                <div class="suggestion-chips">
+                  <button type="button" data-prompt="I feel too overwhelmed to start.">I feel overwhelmed</button>
+                  <button type="button" data-prompt="Help me reset before studying.">Help me reset</button>
+                </div>
+                <form id="chat-form" class="chat-form">
+                  <label class="sr-only" for="chat-input">Message your wellness companion</label>
+                  <input id="chat-input" maxlength="500" placeholder="Talk to SteadyMind..." autocomplete="off">
+                  <button type="submit" aria-label="Send message">→</button>
+                </form>
+                <p class="ai-status" id="ai-status">Checking AI availability...</p>
+              </section>
+
+              <section class="card pulse-card" aria-labelledby="pulse-title">
+                <div class="card-heading">
+                  <div>
+                    <p class="eyebrow">7-day pulse</p>
+                    <h2 id="pulse-title">Your recent rhythm</h2>
+                  </div>
+                  <span id="pulse-label" class="status-badge">No data yet</span>
+                </div>
+                <div id="mini-chart" class="mini-chart" role="img" aria-label="No mood history yet"></div>
+                <p class="chart-caption" id="chart-caption">Check in today to begin noticing patterns.</p>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="patterns" aria-labelledby="patterns-title" hidden>
+          <header class="topbar">
+            <div>
+              <p class="eyebrow">Your signals, not your scores</p>
+              <h1 id="patterns-title">Patterns worth noticing</h1>
+              <p>These are gentle observations, not diagnoses.</p>
+            </div>
+          </header>
+          <div class="patterns-grid">
+            <section class="card wide-card">
+              <div class="card-heading">
+                <div>
+                  <p class="eyebrow">Mood over time</p>
+                  <h2>How your week has felt</h2>
+                </div>
+              </div>
+              <div id="full-chart" class="full-chart" role="img" aria-label="No mood history yet"></div>
+            </section>
+            <section class="card">
+              <p class="eyebrow">Common pressure points</p>
+              <h2>What shows up often</h2>
+              <div id="trigger-list" class="trigger-list">
+                <p class="empty-state">A few check-ins will help reveal recurring themes.</p>
+              </div>
+            </section>
+            <section class="card">
+              <p class="eyebrow">Protective habits</p>
+              <h2>What seems to help</h2>
+              <div id="strength-list" class="trigger-list">
+                <p class="empty-state">Your helpful habits will appear here.</p>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="toolkit" aria-labelledby="toolkit-title" hidden>
+          <header class="topbar">
+            <div>
+              <p class="eyebrow">Use what fits</p>
+              <h1 id="toolkit-title">Your calm toolkit</h1>
+              <p>Short practices designed to fit between study sessions.</p>
+            </div>
+          </header>
+          <div class="tool-grid">
+            <article class="card tool-card">
+              <span class="tool-number">01</span>
+              <p class="eyebrow">60 seconds</p>
+              <h2>Longer exhale</h2>
+              <p>Ease your body out of high alert with a guided 4-in, 6-out breath.</p>
+              <button class="secondary-button exercise-button" data-exercise="breathing" type="button">Begin breathing</button>
+            </article>
+            <article class="card tool-card">
+              <span class="tool-number">02</span>
+              <p class="eyebrow">2 minutes</p>
+              <h2>Next tiny step</h2>
+              <p>Turn an overwhelming study task into one action you can start now.</p>
+              <button class="secondary-button exercise-button" data-exercise="tiny-step" type="button">Break it down</button>
+            </article>
+            <article class="card tool-card">
+              <span class="tool-number">03</span>
+              <p class="eyebrow">90 seconds</p>
+              <h2>Ground in the room</h2>
+              <p>Shift attention from racing thoughts to what your senses can notice.</p>
+              <button class="secondary-button exercise-button" data-exercise="grounding" type="button">Start grounding</button>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="reflection-dialog" aria-labelledby="reflection-title">
+      <button class="dialog-close" type="button" aria-label="Close reflection">×</button>
+      <div id="reflection-content"></div>
+    </dialog>
+
+    <dialog id="exercise-dialog" aria-labelledby="exercise-title">
+      <button class="dialog-close" type="button" aria-label="Close exercise">×</button>
+      <div id="exercise-content"></div>
+    </dialog>
+
+    <dialog id="settings-dialog" aria-labelledby="settings-title">
+      <button class="dialog-close" type="button" aria-label="Close settings">×</button>
+      <p class="eyebrow">Your data, your choice</p>
+      <h2 id="settings-title">Privacy &amp; data</h2>
+      <p>Entries are stored only in this browser. When Generative AI is enabled, the current message and minimized recent context are sent securely to the model provider and are not stored by this server.</p>
+      <div class="settings-actions">
+        <button class="secondary-button" id="export-data" type="button">Export my data</button>
+        <button class="danger-button" id="delete-data" type="button">Delete all data</button>
+      </div>
+      <p class="fine-print">This tool supports reflection and is not medical care or a substitute for a qualified professional.</p>
+    </dialog>
+
+    <template id="crisis-template">
+      <div class="crisis-panel" role="alert">
+        <p class="eyebrow">Your safety comes first</p>
+        <h2 id="reflection-title">Please connect with a person now.</h2>
+        <p>What you wrote sounds like you may be in immediate danger. This app cannot provide emergency support.</p>
+        <ol>
+          <li>Move away from anything you could use to hurt yourself.</li>
+          <li>Call or go to a trusted adult, friend, teacher, counsellor, or family member and say: “I need you to stay with me.”</li>
+          <li>If you might act now, call India emergency services at <a href="tel:112"><strong>112</strong></a> or go to the nearest emergency department.</li>
+        </ol>
+        <div class="crisis-actions">
+          <a class="primary-button link-button" href="tel:112">Call 112 now</a>
+          <a class="secondary-button link-button" href="tel:14416">Call Tele-MANAS 14416</a>
+        </div>
+        <p class="fine-print">Tele-MANAS is India's 24/7 government tele-mental health service. If you are outside India, call your local emergency number.</p>
+      </div>
+    </template>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
