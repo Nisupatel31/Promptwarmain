@@ -14,10 +14,7 @@
   ],
   "functions": {
     "api/**/*.js": {
-      "includeFiles": [
-        "ai-service.js",
-        "wellness.js"
-      ]
+      "includeFiles": "*.js"
     }
   }
 }
